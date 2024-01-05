@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Display Maps</title>
+</head>
+<style>
+    /* Style for the UL and LI elements */
+    .list-container {
+        display: inline-block;
+        border: 1px solid #ccc;
+        margin-right: 10px;
+        padding: 10px;
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        margin-bottom: 5px;
+    }
+</style>
+<body>
+
+<div id="6868" class="list-container"></div>
+<div id="6869" class="list-container"></div>
+<div id="6870" class="list-container"></div>
+<div id="6871" class="list-container"></div>
+<div id="6872" class="list-container"></div>
+<div id="6873" class="list-container"></div>
+<div id="6874" class="list-container"></div>
+
+
+
+
+<script>
+    const maps = {
+        "6868": new Map(),
+        "6869": new Map(),
+        "6870": new Map(),
+        "6871": new Map(),
+        "6872": new Map(),
+        "6873": new Map(),
+        "6874": new Map()
+    }
+
+    const socket = new WebSocket("ws://localhost:4567/web");
+
+    socket.onopen = function (event) {
+        console.log("WebSocket connection opened:", event);
+    };
+
+    socket.onmessage = function (event) {
+        const receivedData = JSON.parse(event.data);
+        console.log(receivedData);
+        displayMap(Object.keys(receivedData)[0], Object.values(receivedData)[0]);
+    };
+
+    socket.onclose = function (event) {
+        console.log("WebSocket connection closed:", event);
+    };
+
+    function displayMap(mapName, data) {
+        var container = document.getElementById(mapName);
+
+        container.innerHTML = "";
+
+        var header = document.createElement("h2");
+        header.textContent = mapName;
+        container.appendChild(header);
+
+        var ul = document.createElement("ul");
+
+        Object.entries(data).forEach(([key, value]) => {
+            var li = document.createElement("li");
+            li.textContent = key + ": " + value;
+            ul.appendChild(li);
+        });
+
+        container.appendChild(ul);
+    }
+
+</script>
+</body>
+</html>
